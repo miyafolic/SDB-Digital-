@@ -2,10 +2,15 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
-    name: { type: String, default: "User" },
+    name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    isVerified: { type: Boolean, default: false },
+    otp: { type: String, default: null },
+    otpExpires: { type: Date, default: null },
+    resetToken: { type: String, default: null },
+    resetTokenExpires: { type: Date, default: null },
     coins: { type: Number, default: 0 },
-    lastAdWatchedAt: { type: Date, default: null },
     dailyAdsCount: { type: Number, default: 0 },
   },
   { timestamps: true }
