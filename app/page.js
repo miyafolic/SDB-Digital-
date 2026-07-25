@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
-import Header from "@/components/Header";
-import BottomNav from "@/components/BottomNav";
+import Header from "../components/Header";
+import BottomNav from "../components/BottomNav";
+
 import { Tv, Wallet, ShieldCheck, ArrowRight, PlayCircle, Zap } from "lucide-react";
 
 export default function Home() {
