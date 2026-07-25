@@ -1,7 +1,7 @@
-import connectToDatabase from "../../../../lib/mongodb";
-import User from "../../../../models/User";
+import connectToDatabase from "../../../../../lib/mongodb";
+import User from "../../../../../models/User";
 import bcrypt from "bcryptjs";
-import { sendOtpEmail } from "../../../../lib/nodemailer";
+import { sendOtpEmail } from "../../../../../lib/nodemailer";
 
 export async function POST(req) {
   try {
