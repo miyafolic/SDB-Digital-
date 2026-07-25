@@ -2,7 +2,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "SDB DIGITAL",
-  description: "Watch Ads & Earn Real Cash",
+  description: "Watch Ads & Earn Cash",
 };
 
 export default function RootLayout({ children }) {
