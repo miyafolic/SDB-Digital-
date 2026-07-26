@@ -27,8 +27,12 @@ export default function Home() {
 
     setLoadingNetwork(networkName);
 
-    // 🚀 Monetag Direct Link Open (Ads Play)
-    window.open("https://omg10.com/4/11413091", "_blank");
+    // 🚀 Adsterra / Monetag Ads Trigger
+    if (networkName === "monetag") {
+      window.open("https://omg10.com/4/11413091", "_blank");
+    } else {
+      window.open("https://pl30547412.effectivecpmnetwork.com/ed/ce/1b/edce1b721d95433fad8dabd17a955294.js", "_blank");
+    }
 
     try {
       const res = await fetch("/api/user/add-coins", {
@@ -70,23 +74,23 @@ export default function Home() {
 
   const adNetworks = [
     {
-      id: "unity",
-      name: "Unity Video Ads",
-      desc: "High eCPM Reward Video Server",
+      id: "adsterra",
+      name: "Adsterra Server",
+      desc: "High CPM Adsterra Network",
       color: "from-purple-600 to-indigo-600",
       icon: "⚡",
     },
     {
       id: "applovin",
-      name: "AppLovin MAX",
-      desc: "Fast Loading Video Ads Server",
+      name: "Adsterra Backup",
+      desc: "Fast Loading Ad Server",
       color: "from-blue-600 to-cyan-600",
       icon: "💎",
     },
     {
       id: "monetag",
       name: "Monetag Rewarded",
-      desc: "Instant Web Video Ads Server",
+      desc: "Instant Web Ads Server",
       color: "from-emerald-600 to-teal-600",
       icon: "🔥",
     },
@@ -148,7 +152,7 @@ export default function Home() {
             </button>
           </div>
         ) : (
-          /* ✅ IF USER IS LOGGED IN: Show 3 Ad Provider Cards */
+          /* ✅ IF USER IS LOGGED IN: Show Ad Provider Cards */
           <div className="space-y-3">
             {adNetworks.map((net) => {
               const count = user?.dailyAds?.[net.id] || 0;
@@ -198,4 +202,4 @@ export default function Home() {
     </main>
   );
           }
-                    
+             
