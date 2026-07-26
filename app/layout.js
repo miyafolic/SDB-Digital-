@@ -10,12 +10,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Monetag Script */}
+        {/* Adsterra Script */}
         <Script
-          src="https://quge5.com/88/tag.min.js"
-          data-zone="263857"
-          async
-          data-cfasync="false"
+          src="https://pl30547412.effectivecpmnetwork.com/ed/ce/1b/edce1b721d95433fad8dabd17a955294.js"
           strategy="afterInteractive"
         />
       </head>
