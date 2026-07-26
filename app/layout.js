@@ -1,17 +1,26 @@
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata = {
   title: "SDB DIGITAL",
-  description: "Watch Ads & Earn Cash",
+  description: "Watch Ads & Earn Real Cash",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-slate-950 text-slate-100 min-h-screen flex justify-center">
-        <div className="w-full max-w-md bg-slate-900 min-h-screen border-x border-slate-800 relative pb-20 shadow-2xl">
-          {children}
-        </div>
+      <head>
+        {/* Monetag Script */}
+        <Script
+          src="https://quge5.com/88/tag.min.js"
+          data-zone="263857"
+          async
+          data-cfasync="false"
+          strategy="afterInteractive"
+        />
+      </head>
+      <body className="bg-slate-950 text-slate-100 antialiased">
+        {children}
       </body>
     </html>
   );
