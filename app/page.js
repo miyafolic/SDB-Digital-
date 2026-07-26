@@ -27,12 +27,8 @@ export default function Home() {
 
     setLoadingNetwork(networkName);
 
-    // Trigger Network Ads
-    if (networkName === "monetag") {
-      window.open("https://quge5.com/88/tag.min.js", "_blank");
-    } else {
-      alert(`🎬 Opening ${networkName.toUpperCase()} Video Ad...`);
-    }
+    // 🚀 Monetag Direct Link Open (Ads Play)
+    window.open("https://omg10.com/4/11413091", "_blank");
 
     try {
       const res = await fetch("/api/user/add-coins", {
@@ -76,21 +72,21 @@ export default function Home() {
     {
       id: "unity",
       name: "Unity Video Ads",
-      desc: "High eCPM Reward Video",
+      desc: "High eCPM Reward Video Server",
       color: "from-purple-600 to-indigo-600",
       icon: "⚡",
     },
     {
       id: "applovin",
       name: "AppLovin MAX",
-      desc: "Fast Loading Video Ads",
+      desc: "Fast Loading Video Ads Server",
       color: "from-blue-600 to-cyan-600",
       icon: "💎",
     },
     {
       id: "monetag",
       name: "Monetag Rewarded",
-      desc: "Instant Web Video Ads",
+      desc: "Instant Web Video Ads Server",
       color: "from-emerald-600 to-teal-600",
       icon: "🔥",
     },
@@ -201,4 +197,5 @@ export default function Home() {
       <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
     </main>
   );
-}
+          }
+                    
