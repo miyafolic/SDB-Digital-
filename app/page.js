@@ -3,95 +3,199 @@ import { useState } from "react";
 import Header from "../components/Header";
 import BottomNav from "../components/BottomNav";
 import AuthModal from "../components/AuthModal";
+import { Lock, LogIn, Sparkles } from "lucide-react";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("home");
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loadingNetwork, setLoadingNetwork] = useState(null);
+  const [cooldown, setCooldown] = useState(0);
 
-  // Coins Add Karne Ka Function
-  const handleWatchAd = async () => {
+  // Handle Watch Ad for Specific Network
+  const handleWatchAd = async (networkName) => {
+    // 🛑 Guard: Agar user login nahi hai to login popup kholo
     if (!user) {
       setIsAuthOpen(true);
       return;
     }
 
-    setLoading(true);
+    if (cooldown > 0) {
+      alert(`⏳ Please wait ${cooldown} seconds before watching another ad!`);
+      return;
+    }
+
+    setLoadingNetwork(networkName);
+
+    // Trigger Network Ads
+    if (networkName === "monetag") {
+      window.open("https://quge5.com/88/tag.min.js", "_blank");
+    } else {
+      alert(`🎬 Opening ${networkName.toUpperCase()} Video Ad...`);
+    }
 
     try {
-      // 1. Database me coins update karo
       const res = await fetch("/api/user/add-coins", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, coinsToAdd: 100 }),
+        body: JSON.stringify({ userId: user.id, network: networkName }),
       });
 
       const data = await res.json();
 
       if (data.success) {
-        setUser({ ...user, coins: data.coins });
-        alert("🎉 Success! 100 Coins added to your account.");
+        setUser({
+          ...user,
+          coins: data.coins,
+          dailyAds: data.dailyAds,
+        });
+        alert(data.message);
+
+        // 30-sec Cooldown Timer
+        setCooldown(30);
+        const interval = setInterval(() => {
+          setCooldown((prev) => {
+            if (prev <= 1) {
+              clearInterval(interval);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
       } else {
-        alert("❌ Failed to add coins: " + data.message);
+        alert("❌ " + data.message);
       }
     } catch (err) {
-      alert("❌ Something went wrong while adding coins.");
+      alert("❌ Failed to process ad reward.");
     } finally {
-      setLoading(false);
+      setLoadingNetwork(null);
     }
   };
+
+  const adNetworks = [
+    {
+      id: "unity",
+      name: "Unity Video Ads",
+      desc: "High eCPM Reward Video",
+      color: "from-purple-600 to-indigo-600",
+      icon: "⚡",
+    },
+    {
+      id: "applovin",
+      name: "AppLovin MAX",
+      desc: "Fast Loading Video Ads",
+      color: "from-blue-600 to-cyan-600",
+      icon: "💎",
+    },
+    {
+      id: "monetag",
+      name: "Monetag Rewarded",
+      desc: "Instant Web Video Ads",
+      color: "from-emerald-600 to-teal-600",
+      icon: "🔥",
+    },
+  ];
 
   return (
     <main className="w-full max-w-md mx-auto bg-slate-900 min-h-screen text-slate-100 relative pb-24">
       <Header user={user} onLoginClick={() => setIsAuthOpen(true)} />
 
       <div className="p-4 space-y-4">
-        {/* Banner Card */}
-        <div className="bg-gradient-to-br from-cyan-600 to-emerald-600 rounded-2xl p-5 text-white shadow-lg">
-          <p className="text-xs font-medium opacity-80 uppercase tracking-wider">SDB DIGITAL CORE</p>
-          <h1 className="text-2xl font-black mt-1">Watch Ads & Earn Cash</h1>
-          <p className="text-xs mt-1 text-slate-100 opacity-90">
-            1,000 Coins = ₹10 Real Money | Instant UPI Payouts
-          </p>
-          
-          <button 
-            onClick={handleWatchAd}
-            disabled={loading}
-            className="mt-4 px-5 py-2.5 bg-white text-slate-900 font-bold text-sm rounded-xl hover:bg-slate-100 transition shadow-md disabled:opacity-50"
-          >
-            {loading ? "Processing..." : user ? "🎬 Watch Ad (+100 Coins)" : "Login to Start Earning →"}
-          </button>
-        </div>
-
-        {/* User Balance Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-slate-800/60 border border-slate-700/50 p-4 rounded-2xl">
-            <span className="text-xs text-slate-400 font-medium">Total Balance</span>
-            <div className="text-xl font-bold text-amber-400 mt-1 flex items-center gap-1">
+        {/* Balance Card */}
+        <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/60 rounded-2xl p-4 flex items-center justify-between shadow-md">
+          <div>
+            <span className="text-xs text-slate-400 font-medium">Your Total Balance</span>
+            <div className="text-2xl font-black text-amber-400 mt-0.5">
               🪙 {user ? user.coins || 0 : 0}
             </div>
-            <span className="text-[11px] text-emerald-400 font-medium block mt-1">
+            <span className="text-xs text-emerald-400 font-semibold">
               ≈ ₹{((user?.coins || 0) / 100).toFixed(2)} INR
             </span>
           </div>
-
-          <div className="bg-slate-800/60 border border-slate-700/50 p-4 rounded-2xl">
-            <span className="text-xs text-slate-400 font-medium">Payout Threshold</span>
-            <div className="text-xl font-bold text-cyan-400 mt-1">
-              1,000 🪙
+          
+          {cooldown > 0 ? (
+            <div className="bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1.5 rounded-xl text-xs font-bold animate-pulse">
+              ⏱️ Wait {cooldown}s
             </div>
-            <span className="text-[11px] text-slate-400 block mt-1">
-              Min ₹10 Withdrawal
-            </span>
-          </div>
+          ) : (
+            <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5" /> 1000 🪙 = ₹10
+            </div>
+          )}
         </div>
+
+        {/* Section Header */}
+        <div>
+          <h2 className="text-base font-bold text-white flex items-center gap-2">
+            🎬 Watch Ads & Earn Cash
+          </h2>
+          <p className="text-xs text-slate-400">Earn 100 Coins per ad (Limit: 20 Ads/Day per server)</p>
+        </div>
+
+        {/* 🔒 IF USER IS NOT LOGGED IN: Show Login Prompt */}
+        {!user ? (
+          <div className="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-6 text-center space-y-3">
+            <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/20">
+              <Lock className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-white">Login Required to Earn</h3>
+              <p className="text-xs text-slate-400 mt-1">
+                Please login or create an account to unlock video ad servers and start earning real cash.
+              </p>
+            </div>
+            <button
+              onClick={() => setIsAuthOpen(true)}
+              className="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
+            >
+              <LogIn className="w-4 h-4" /> Login / Signup to Earn
+            </button>
+          </div>
+        ) : (
+          /* ✅ IF USER IS LOGGED IN: Show 3 Ad Provider Cards */
+          <div className="space-y-3">
+            {adNetworks.map((net) => {
+              const count = user?.dailyAds?.[net.id] || 0;
+              const isCompleted = count >= 20;
+
+              return (
+                <div
+                  key={net.id}
+                  className="bg-slate-800/80 border border-slate-700/50 rounded-2xl p-4 flex items-center justify-between hover:border-slate-600 transition"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{net.icon}</span>
+                      <h3 className="text-sm font-bold text-white">{net.name}</h3>
+                    </div>
+                    <p className="text-[11px] text-slate-400">{net.desc}</p>
+                    <div className="text-[11px] text-cyan-400 font-medium">
+                      Daily Progress: <span className="text-white font-bold">{count} / 20</span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => handleWatchAd(net.id)}
+                    disabled={loadingNetwork === net.id || isCompleted || cooldown > 0}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition shadow-md bg-gradient-to-r ${net.color} text-white disabled:opacity-40`}
+                  >
+                    {loadingNetwork === net.id
+                      ? "Loading..."
+                      : isCompleted
+                      ? "Completed"
+                      : "Watch Ad"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      <AuthModal 
-        isOpen={isAuthOpen} 
-        onClose={() => setIsAuthOpen(false)} 
-        onAuthSuccess={(userData) => setUser(userData)} 
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onAuthSuccess={(userData) => setUser(userData)}
       />
 
       <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
